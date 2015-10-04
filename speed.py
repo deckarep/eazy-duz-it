@@ -35,4 +35,5 @@ def setClipboardData(data):
 	p.stdin.close()
 	retcode = p.wait()
 
-pull_request("my awesome pr")
+if __name__ == "__main__":
+	pull_request("my awesome pr")
