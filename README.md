@@ -1,7 +1,5 @@
 Easy Duz It
 ===========
-
-## Summary
 Easy Duz It aims to streamline and simplify the code contribution cycle by allowing you to concentrate more of your time on coding while minimizing the time necessary to contribute changes to the repo.  It does this by standardizing the PR templates, to ensure best practices and consistency amongst our varied repos.
 
 ## Dependencies
