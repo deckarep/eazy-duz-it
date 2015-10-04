@@ -37,6 +37,23 @@ def setClipboardData(data):
 	retcode = p.wait()
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser("Boy you should have known by now, Easy duz it.")
-	parser.parse_args()
-	pull_request("my awesome pr")
+	parser = argparse.ArgumentParser(prog="eazy-duz-it")
+
+	parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
+	parser.add_argument("-t", "--title", dest="title", help="title for your pull-request")
+
+	# Parse that shit.
+	args = parser.parse_args()
+	print args.title
+	print args.pr
+
+	# Generate pr
+	if args.pr:
+		if not args.title:
+			print "You need a title."
+		pull_request("my awesome pr")
+
+
+
+
+
