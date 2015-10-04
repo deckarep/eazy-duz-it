@@ -37,6 +37,6 @@ def setClipboardData(data):
 	retcode = p.wait()
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser("Boy you should have known by now, Easy duz it.")
 	parser.parse_args()
 	pull_request("my awesome pr")
