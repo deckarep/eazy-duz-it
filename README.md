@@ -8,7 +8,9 @@ Easy Duz It aims to streamline and simplify the code contribution cycle by allow
 This tool requires the following sub-tools:
 * hub (https://hub.github.com/)
 
+```sh
     brew install hub
+```
 
 * pbcopy/pbpaste
 * a Github account
