@@ -7,6 +7,8 @@ Easy Duz It aims to streamline and simplify the code contribution cycle by allow
 ## Dependencies
 This tool requires the following sub-tools:
 * hub (https://hub.github.com/)
+
     brew install hub
+
 * pbcopy/pbpaste
 * a Github account
