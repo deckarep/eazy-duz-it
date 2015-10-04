@@ -1,5 +1,6 @@
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
+import argparse
 
 def pull_request(title):
 	# merge master template with contributing template
@@ -36,4 +37,6 @@ def setClipboardData(data):
 	retcode = p.wait()
 
 if __name__ == "__main__":
+	parser = argparse.ArgumentParser()
+	parser.parse_args()
 	pull_request("my awesome pr")
