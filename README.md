@@ -18,8 +18,8 @@ This tool requires the following sub-tools:
 ```sh
 # Navigate to a git repo
 cd some/git/repo
-# Ensure hub is installed
-hub --version
+# Ensure hub is installed (>= 2.2.0)
+hub --version 
 # Ensure hub can log in (this causes hub to generate a log-in token)
 hub browse
 ```

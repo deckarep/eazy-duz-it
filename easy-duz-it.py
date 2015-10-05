@@ -34,6 +34,11 @@ def pull_request(title):
 	setClipboardData(link)
 	print "Created PR (added to clipboard) : " + link 
 
+# TODO: this will generate and fill out a release
+def cut_release(tag_name):
+	# To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
+	# To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
+
 def load_template(name):
 	if os.path.isfile(name):
 		with open(name, 'r') as f:
