@@ -37,5 +37,5 @@ This example will automatically create a pull-request, add the PR template and p
 This example will generate a pre-release for you automatically
 ```sh
 # After you've successfully merged your topic branch, switch to master and run the following
-./easy-duz-it -rt"
+./easy-duz-it -rt
 ```
