@@ -19,7 +19,7 @@ def pull_request(title):
 	global_template = load_template("GLOBAL.md")
 	cont_json = load_json("easy-duz-it.json")
 	tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
-	checklist = "\n".join(["\t" + c for c in cont_json["contributing"]])
+	checklist = "\n".join(["\t- [ ] " + c for c in cont_json["contributing"]])
 	merged_template = title + "\n\n" + global_template + tier + checklist
 
 	# generate a PR against the merged templates
@@ -40,8 +40,19 @@ def load_template(name):
 
 def load_json(name):
 	d = load_template(name)
-	j = json.loads(d)
+	j = byteify(json.loads(d))
 	return j
+
+# Keeps json in simple ascii format
+def byteify(input):
+	if isinstance(input, dict):
+		return {byteify(key):byteify(value) for key,value in input.iteritems()}
+	elif isinstance(input, list):
+		return [byteify(element) for element in input]
+	elif isinstance(input, unicode):
+		return input.encode('utf-8')
+	else:
+		return input
 
 # Helper method for getting the clipboard's data
 def getClipboardData():
@@ -65,8 +76,8 @@ if __name__ == "__main__":
 
 	# Parse that shit.
 	args = parser.parse_args()
-	print args.title
-	print args.pr
+	#print args.title
+	#print args.pr
 
 	# Generate pr
 	if args.pr:
