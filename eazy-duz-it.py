@@ -19,7 +19,7 @@ import json
 def pull_request(title):
 	# merge master template with contributing template
 	global_template = load_template("GLOBAL.md")
-	cont_json = load_json("easy-duz-it.json")
+	cont_json = load_json("eazy-duz-it.json")
 	# generate exclusive repo contents
 	tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
 	# including checklist specific to this repo
