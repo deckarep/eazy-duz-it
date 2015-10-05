@@ -30,12 +30,12 @@ This example will automatically create a pull-request, add the PR template and p
 
 ```sh
 # On a feature branch, generate a pull-request with a simple title.
-./easy-duz-it.py -pr -t "CORE-267: Adds support for protocol buffers"
+./easy-duz-it -pr -t "CORE-267: Adds support for protocol buffers"
 ```
 
 ### Release Tags
 This example will generate a pre-release for you automatically
 ```sh
 # After you've successfully merged your topic branch, switch to master and run the following
-./easy-duz-it.py -pr -t "fixing spelling."
+./easy-duz-it -pr -t "fixing spelling."
 ```
