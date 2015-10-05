@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from datetime import date
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 import argparse
@@ -26,6 +27,7 @@ def pull_request(title):
 	merged_template = title + "\n\n" + global_template + tier + checklist
 
 	# generate a PR against the merged templates
+	# Note: the ugly dash is special syntax that reads from STDIN
 	p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 	cmd_stdout = p.communicate(input=merged_template)[0]
 	link = cmd_stdout.decode()
@@ -36,7 +38,15 @@ def pull_request(title):
 
 # TODO: this will generate and fill out a release
 def cut_release():
-	pass
+	# Generate tag format
+	today = date.today()
+	tag = today.strftime("%Y%m%d") + ".1"
+
+	# Note: the ugly dash is special syntax that reads from STDIN
+	p = Popen(["hub", "release", "create", "-p", "-f", "-", tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
+	tag_link = cmd_stdout.decode()
+	print tag_link
 	# Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
 	#     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
 	# You only need this:
