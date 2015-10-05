@@ -1,7 +1,18 @@
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 import argparse
+import os.path
 
+# TODO:
+# * parse version from repo, perhaps by specifiying a file and line and regex of where to get the version
+# * increment version automatically (optional)
+# * provide json config in repo where all the details live
+# * include the chef-data staging/production keys that should get updated
+# * provide command: --pull-request (currently in progress)
+# * provide command: --release (not started, but cuts a release)
+# * provide command: --rollback (reverses process for speedy rollback)
+# * provide command: --staging (automatically prompts to create a release if one doesn't exist)
+# * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
 	# merge master template with contributing template
 	global_template = load_template("GLOBAL.md")
@@ -18,9 +29,11 @@ def pull_request(title):
 	print "Created PR (added to clipboard) : " + link 
 
 def load_template(name):
-	with open(name, 'r') as f:
-		lines = f.read()
-		return lines
+	if os.path.isfile(name):
+		with open(name, 'r') as f:
+			lines = f.read()
+			return lines
+	return ""
 
 # Helper method for getting the clipboard's data
 def getClipboardData():
