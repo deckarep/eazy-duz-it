@@ -13,3 +13,13 @@ This tool requires the following sub-tools:
 
 * pbcopy/pbpaste
 * a Github account
+
+## Usage
+```sh
+# Navigate to a git repo
+cd some/git/repo
+# Ensure hub is installed
+hub --version
+# Ensure hub can log in (this causes hub to generate a log-in token)
+hub browse
+```
