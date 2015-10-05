@@ -1,0 +1,13 @@
+{
+    "contributing": [
+        "A",
+        "B",
+        "C"
+    ],
+    "name": "Apid",
+    "owned_by": "Mail Pipeline Team",
+    "version": {
+        "file": "version.go",
+        "line_contains": null
+    }
+}

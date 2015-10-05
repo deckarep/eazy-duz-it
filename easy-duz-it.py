@@ -2,6 +2,7 @@ import subprocess
 from subprocess import Popen, PIPE, STDOUT
 import argparse
 import os.path
+import json
 
 # TODO:
 # * parse version from repo, perhaps by specifiying a file and line and regex of where to get the version
@@ -16,8 +17,10 @@ import os.path
 def pull_request(title):
 	# merge master template with contributing template
 	global_template = load_template("GLOBAL.md")
-	cont_template = load_template("CONTRIBUTING.md")
-	merged_template = title + "\n\n" + global_template + cont_template
+	cont_json = load_json("easy-duz-it.json")
+	tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
+	checklist = "\n".join(["\t" + c for c in cont_json["contributing"]])
+	merged_template = title + "\n\n" + global_template + tier + checklist
 
 	# generate a PR against the merged templates
 	p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
@@ -34,6 +37,11 @@ def load_template(name):
 			lines = f.read()
 			return lines
 	return ""
+
+def load_json(name):
+	d = load_template(name)
+	j = json.loads(d)
+	return j
 
 # Helper method for getting the clipboard's data
 def getClipboardData():
