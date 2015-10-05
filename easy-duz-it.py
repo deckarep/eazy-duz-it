@@ -38,8 +38,12 @@ def pull_request(title):
 def cut_release(tag_name):
 	# Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
 	#     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
-	# You only need this
+	# You only need this:
 	# To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
+
+	# For testing purpose, delete tags like so:
+	# git tag -d 12345
+	# git push origin :refs/tags/12345
 
 def load_template(name):
 	if os.path.isfile(name):
