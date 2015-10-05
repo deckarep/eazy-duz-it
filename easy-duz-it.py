@@ -36,6 +36,7 @@ def pull_request(title):
 
 # TODO: this will generate and fill out a release
 def cut_release(tag_name):
+	pass
 	# Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
 	#     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
 	# You only need this:
@@ -85,21 +86,20 @@ def setClipboardData(data):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(prog="eazy-duz-it")
 
+	# pull-request arguments
 	parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
 	parser.add_argument("-t", "--title", dest="title", help="title for your pull-request")
 
-	# Parse that shit.
+	# pre-release tag arguments
+	parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
+
 	args = parser.parse_args()
-	#print args.title
-	#print args.pr
 
 	# Generate pr
 	if args.pr:
 		if not args.title:
 			print "You need a title."
 		pull_request(args.title)
-
-
-
-
+	elif args.rt:
+		cut_release() # does nothing yet
 
