@@ -35,7 +35,7 @@ def pull_request(title):
 	print "Created PR (added to clipboard) : " + link 
 
 # TODO: this will generate and fill out a release
-def cut_release(tag_name):
+def cut_release():
 	pass
 	# Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
 	#     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
