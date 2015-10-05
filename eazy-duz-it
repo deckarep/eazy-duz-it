@@ -13,6 +13,10 @@ import json
 # * include the chef-data staging/production keys that should get updated
 # * provide command: --pull-request (currently in progress)
 # * provide command: --release (not started, but cuts a release)
+#   * Need to:
+#		* create local tag based on datetime format
+# 		* push tag to remote
+# 		* use the created tag as the hash against the release tag
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
