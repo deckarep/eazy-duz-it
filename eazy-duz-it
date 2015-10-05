@@ -37,6 +37,7 @@ def pull_request(title):
 	print "Created PR (added to clipboard) : " + link 
 
 # TODO: this will generate and fill out a release
+# BUG: this creates a tag but with the wrong sha1, need to figure out why.
 def cut_release():
 	# Generate tag format
 	today = date.today()
