@@ -25,6 +25,8 @@ hub browse
 ```
 
 ## Examples
+This example will automatically create a pull-request, add the PR template and pre-fill out version, README.MD information.
+
 ```sh
 # On a feature branch, generate a pull-request with a simple title.
 ./easy-duz-it.py -pr -t "CORE-267: Adds support for protocol buffers"
