@@ -23,3 +23,8 @@ hub --version
 # Ensure hub can log in (this causes hub to generate a log-in token)
 hub browse
 ```
+
+## Examples
+```sh
+./easy-duz-it.py -pr -t "CORE-267: Adds support for protocol buffers"
+```
