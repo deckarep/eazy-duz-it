@@ -1,8 +1,8 @@
 {
     "contributing": [
-        "A",
-        "B",
-        "C"
+        "Endpoint caching is setup properly",
+        "Proper R/W flag is used for DB operations",
+        "Models properly updated"
     ],
     "name": "Apid",
     "owned_by": "Mail Pipeline Team",
