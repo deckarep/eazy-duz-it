@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	if args.pr:
 		if not args.title:
 			print "You need a title."
-		pull_request("my awesome pr")
+		pull_request(args.title)
 
 
 
