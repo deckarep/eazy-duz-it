@@ -1,4 +1,0 @@
-- [ ] Apid -  Merge Checklist:
-    - [ ] A 
-    - [ ] B 
-    - [ ] C 
