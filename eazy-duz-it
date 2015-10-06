@@ -31,9 +31,9 @@ def pull_request(title):
    tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
    # including checklist specific to this repo
    checklist = []
-   if cont_json.get("requires_cr_by_owner", False):
-       checklist.append("\t- [ ] Team Reviewed: " + cont_json.get("owner", ""))
-   checklist = checklist + ["\t- [ ] " + c for c in cont_json["contributing"]]
+   if cont_json.get("requires_owner_review", False):
+       checklist.append(checkbox("Team Reviewed: " + cont_json.get("owner", "")))
+   checklist = checklist + [checkbox(c) for c in cont_json["contributing"]]
 
    checklist_template = "\n".join(checklist)
    merged_template = title + "\n\n" + global_template + tier + checklist_template
@@ -46,7 +46,7 @@ def pull_request(title):
 
    # assign resultant link to clipboard
    setClipboardData(link)
-   print "Created PR (added to clipboard) : " + link 
+   print "Created PR (added to clipboard) : " + link
 
 def cut_release():
     # Generate tag format
@@ -74,6 +74,9 @@ def cut_release():
             # For testing purpose, delete tags like so:
             # git tag -d 12345
             # git push origin :refs/tags/12345
+
+def checkbox(s):
+    return "\t- [ ] " + s
 
 def git_is_clean():
     p = Popen(["git", "status"], stdout=PIPE)

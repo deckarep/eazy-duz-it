@@ -6,7 +6,7 @@
     ],
     "name": "Apid",
     "owner": "Mail Pipeline Team",
-    "requires_cr_by_owner": true,
+    "requires_owner_review": true,
     "version": {
         "file": "version.go"
     },
