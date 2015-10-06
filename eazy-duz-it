@@ -45,8 +45,8 @@ def pull_request(title):
    link = cmd_stdout.decode()
 
    # assign resultant link to clipboard
-   setClipboardData(link)
-   print "Created PR (added to clipboard) : " + link
+   #setClipboardData(link)
+   print link
 
 def cut_release():
     # Generate tag format
