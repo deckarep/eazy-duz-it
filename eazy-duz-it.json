@@ -5,9 +5,18 @@
         "Models properly updated"
     ],
     "name": "Apid",
-    "owned_by": "Mail Pipeline Team",
+    "owner": "Mail Pipeline Team",
+    "requires_cr_by_owner": true,
     "version": {
         "file": "version.go"
     },
-    "tag_type": "date"
+    "tag_type": "date",
+    "staging": {
+        "file":"environments/staging_sjc.rb",
+        "key":"$environment['apid']['deployment']['version']"
+    },
+    "production":{
+        "file":"environments/common/production.rb",
+        "key":"$environment['apid']['deployment']['version']"  
+    }
 }
