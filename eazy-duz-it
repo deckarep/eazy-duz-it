@@ -7,7 +7,7 @@ import argparse
 import os.path
 import json
 
-MAX_ALLOWED_RELEASE_TAGS = 30
+MAX_ALLOWED_RELEASE_TAGS = 70
 
 # TODO:
 # * parse version from repo, perhaps by specifiying a file and line and regex of where to get the version
@@ -77,7 +77,6 @@ def git_is_clean():
     else:
         return True
 
-
 def git_tag(tag):
     # create tag
     p = Popen(["git", "tag", "-a", tag, "-m", "Release on " + tag], stdout=PIPE)
@@ -146,10 +145,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Generate pr
+    # Creates a pull-request
     if args.pr:
         if not args.title:
             print "You need a title."
         pull_request(args.title)
+    # Creates a release    
     elif args.rt:
         cut_release() # does nothing yet

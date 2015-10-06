@@ -8,5 +8,6 @@
     "owned_by": "Mail Pipeline Team",
     "version": {
         "file": "version.go"
-    }
+    },
+    "tag_type": "date"
 }
