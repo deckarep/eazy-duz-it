@@ -7,6 +7,8 @@ import argparse
 import os.path
 import json
 
+MAX_ALLOWED_RELEASE_TAGS = 30
+
 # TODO:
 # * parse version from repo, perhaps by specifiying a file and line and regex of where to get the version
 # * increment version automatically (optional)
@@ -15,61 +17,58 @@ import json
 # * provide command: --pull-request (currently in progress)
 # * provide command: --release (not started, but cuts a release)
 #   * Need to:
-#		* create local tag based on datetime format
-# 		* push tag to remote
-# 		* use the created tag as the hash against the release tag
+#       * create local tag based on datetime format
+#       * push tag to remote
+#       * use the created tag as the hash against the release tag
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
-	# merge master template with contributing template
-	global_template = load_template("GLOBAL.md")
-	cont_json = load_json("eazy-duz-it.json")
-	# generate exclusive repo contents
-	tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
-	# including checklist specific to this repo
-	checklist = "\n".join(["\t- [ ] " + c for c in cont_json["contributing"]])
-	merged_template = title + "\n\n" + global_template + tier + checklist
+    # merge master template with contributing template
+    global_template = load_template("GLOBAL.md")
+    cont_json = load_json("eazy-duz-it.json")
+    # generate exclusive repo contents
+    tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
+    # including checklist specific to this repo
+    checklist = "\n".join(["\t- [ ] " + c for c in cont_json["contributing"]])
+    merged_template = title + "\n\n" + global_template + tier + checklist
 
-	# generate a PR against the merged templates
-	# Note: the ugly dash is special syntax that reads from STDIN
-	p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-	cmd_stdout = p.communicate(input=merged_template)[0]
-	link = cmd_stdout.decode()
+    # generate a PR against the merged templates
+    # Note: the ugly dash is special syntax that reads from STDIN
+    p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+    cmd_stdout = p.communicate(input=merged_template)[0]
+    link = cmd_stdout.decode()
 
-	# assign resultant link to clipboard
-	setClipboardData(link)
-	print "Created PR (added to clipboard) : " + link 
+    # assign resultant link to clipboard
+    setClipboardData(link)
+    print "Created PR (added to clipboard) : " + link 
 
-# TODO: this will generate and fill out a release
-# BUG: this creates a tag but with the wrong sha1, need to figure out why.
 def cut_release():
-	# Generate tag format
-	today = date.today()
-	tag = today.strftime("%Y%m%d")
+    # Generate tag format
+    today = date.today()
+    tag = today.strftime("%Y%m%d")
+    # First check existing tags, to see if we need to increment.
+    existing_tags = git_list_tags()
+    for num in range(1, MAX_ALLOWED_RELEASE_TAGS):
+        new_tag = tag + "." + str(num)
+        if not new_tag in existing_tags:
+            # Creates both local and remote tag
+            git_tag(new_tag)
 
-        # First check existing tags, to see if we need to increment.
-        existing_tags = git_list_tags()
-        for num in range(1,10):
-            new_tag = tag + "." + str(num)
-            if not new_tag in existing_tags:
-                # Creates both local and remote tag
-                git_tag(new_tag)
+            # Note: the ugly dash is special syntax that reads from STDIN
+            p = Popen(["hub", "release", "create", "-p", "-f", "-", new_tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+            cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
+            tag_link = cmd_stdout.decode()
+            print tag_link
+            break
+            # Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
+            #     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
+            # You only need this:
+            # To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
 
-	        # Note: the ugly dash is special syntax that reads from STDIN
-	        p = Popen(["hub", "release", "create", "-p", "-f", "-", new_tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-	        cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
-	        tag_link = cmd_stdout.decode()
-	        print tag_link
-                break
-	        # Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
-	        #     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
-	        # You only need this:
-	        # To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
-
-	        # For testing purpose, delete tags like so:
-	        # git tag -d 12345
-	        # git push origin :refs/tags/12345
+            # For testing purpose, delete tags like so:
+            # git tag -d 12345
+            # git push origin :refs/tags/12345
 
 def git_is_clean():
     p = Popen(["git", "status"], stdout=PIPE)
@@ -94,62 +93,63 @@ def git_list_tags():
     return tags
 
 def load_template(name):
-	if os.path.isfile(name):
-		with open(name, 'r') as f:
-			lines = f.read()
-			return lines
-	return ""
+    if os.path.isfile(name):
+        with open(name, 'r') as f:
+            lines = f.read()
+            return lines
+    return ""
 
 def load_json(name):
-	d = load_template(name)
-	j = byteify(json.loads(d))
-	return j
+    d = load_template(name)
+    j = byteify(json.loads(d))
+    return j
 
 # Keeps json in simple ascii format
 def byteify(input):
-	if isinstance(input, dict):
-		return {byteify(key):byteify(value) for key,value in input.iteritems()}
-	elif isinstance(input, list):
-		return [byteify(element) for element in input]
-	elif isinstance(input, unicode):
-		return input.encode('utf-8')
-	else:
-		return input
+    if isinstance(input, dict):
+        return {byteify(key):byteify(value) for key,value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
 
 # Helper method for getting the clipboard's data
 def getClipboardData():
-	p = subprocess.Popen(['pbpaste'], stdout=subprocess.PIPE)
-	retcode = p.wait()
-	data = p.stdout.read()
-	return data
+    p = subprocess.Popen(['pbpaste'], stdout=subprocess.PIPE)
+    retcode = p.wait()
+    data = p.stdout.read()
+    return data
 
 # Helper method for setting the clipboard with data
 def setClipboardData(data):
-	p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
-	p.stdin.write(data)
-	p.stdin.close()
-	retcode = p.wait()
+    p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+    p.stdin.write(data)
+    p.stdin.close()
+    retcode = p.wait()
 
 if __name__ == "__main__":
-        if not git_is_clean():
-            print "Aborting: branch not clean."
-            sys.exit(1) 
+    # Don't do ANYTHING if git is not clean.
+    if not git_is_clean():
+        print "Aborting: branch not clean."
+        #sys.exit(1) 
 
-	parser = argparse.ArgumentParser(prog="eazy-duz-it")
+    parser = argparse.ArgumentParser(prog="eazy-duz-it")
 
-	# pull-request arguments
-	parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
-	parser.add_argument("-t", "--title", dest="title", help="title for your pull-request")
+    # pull-request arguments
+    parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
+    parser.add_argument("-t", "--title", dest="title", help="title for your pull-request")
 
-	# pre-release tag arguments
-	parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
+    # pre-release tag arguments
+    parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
 
-	args = parser.parse_args()
+    args = parser.parse_args()
 
-	# Generate pr
-	if args.pr:
-		if not args.title:
-			print "You need a title."
-		pull_request(args.title)
-	elif args.rt:
-		cut_release() # does nothing yet
+    # Generate pr
+    if args.pr:
+        if not args.title:
+            print "You need a title."
+        pull_request(args.title)
+    elif args.rt:
+        cut_release() # does nothing yet
