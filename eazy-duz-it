@@ -24,24 +24,29 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
-    # merge master template with contributing template
-    global_template = load_template("GLOBAL.md")
-    cont_json = load_json("eazy-duz-it.json")
-    # generate exclusive repo contents
-    tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
-    # including checklist specific to this repo
-    checklist = "\n".join(["\t- [ ] " + c for c in cont_json["contributing"]])
-    merged_template = title + "\n\n" + global_template + tier + checklist
+#   # merge master template with contributing template
+   global_template = load_template("GLOBAL.md")
+   cont_json = load_json("eazy-duz-it.json")
+   # generate exclusive repo contents
+   tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
+   # including checklist specific to this repo
+   checklist = []
+   if cont_json.get("requires_cr_by_owner", False):
+       checklist.append("\t- [ ] Team Reviewed: " + cont_json.get("owner", ""))
+   checklist = checklist + ["\t- [ ] " + c for c in cont_json["contributing"]]
 
-    # generate a PR against the merged templates
-    # Note: the ugly dash is special syntax that reads from STDIN
-    p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-    cmd_stdout = p.communicate(input=merged_template)[0]
-    link = cmd_stdout.decode()
+   checklist_template = "\n".join(checklist)
+   merged_template = title + "\n\n" + global_template + tier + checklist_template
 
-    # assign resultant link to clipboard
-    setClipboardData(link)
-    print "Created PR (added to clipboard) : " + link 
+   # generate a PR against the merged templates
+   # Note: the ugly dash is special syntax that reads from STDIN
+   p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+   cmd_stdout = p.communicate(input=merged_template)[0]
+   link = cmd_stdout.decode()
+
+   # assign resultant link to clipboard
+   setClipboardData(link)
+   print "Created PR (added to clipboard) : " + link 
 
 def cut_release():
     # Generate tag format
@@ -150,6 +155,5 @@ if __name__ == "__main__":
         if not args.title:
             print "You need a title."
         pull_request(args.title)
-    # Creates a release    
     elif args.rt:
         cut_release() # does nothing yet
