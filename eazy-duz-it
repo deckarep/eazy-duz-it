@@ -52,7 +52,7 @@ def cut_release():
         for num in range(1,10):
             new_tag = tag + "." + str(num)
             if not new_tag in existing_tags:
-                # Create local and remote tag
+                # Creates both local and remote tag
                 git_tag(new_tag)
 
 	        # Note: the ugly dash is special syntax that reads from STDIN
@@ -69,6 +69,14 @@ def cut_release():
 	        # For testing purpose, delete tags like so:
 	        # git tag -d 12345
 	        # git push origin :refs/tags/12345
+
+def git_is_clean():
+    p = Popen(["git", "status"], stdout=PIPE)
+    if "Changes not staged for commit" in p.stdout.read():
+        return False
+    else:
+        return True
+
 
 def git_tag(tag):
     # create tag
@@ -139,5 +147,6 @@ if __name__ == "__main__":
 			print "You need a title."
 		pull_request(args.title)
 	elif args.rt:
-		cut_release() # does nothing yet
+		#cut_release() # does nothing yet
+                print git_is_clean()
 
