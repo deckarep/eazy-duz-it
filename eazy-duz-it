@@ -25,7 +25,7 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
 #   # merge master template with contributing template
-   global_template = load_template("GLOBAL.md")
+   global_template = load_template("GLOBAL.md").replace("{{SUMMARY}}", title + "\n")
    cont_json = load_json("eazy-duz-it.json")
    # generate exclusive repo contents
    tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]

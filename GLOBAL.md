@@ -1,5 +1,5 @@
 ## Summary
-
+{{SUMMARY}}
 ## PR - Merge Checklist:
 - [ ] Version updated (version #)
 - [ ] CHANGELOG updated
