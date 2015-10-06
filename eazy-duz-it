@@ -45,21 +45,44 @@ def pull_request(title):
 def cut_release():
 	# Generate tag format
 	today = date.today()
-	tag = today.strftime("%Y%m%d") + ".1"
+	tag = today.strftime("%Y%m%d")
 
-	# Note: the ugly dash is special syntax that reads from STDIN
-	p = Popen(["hub", "release", "create", "-p", "-f", "-", tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-	cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
-	tag_link = cmd_stdout.decode()
-	print tag_link
-	# Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
-	#     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
-	# You only need this:
-	# To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
+        # First check existing tags, to see if we need to increment.
+        existing_tags = git_list_tags()
+        for num in range(1,10):
+            new_tag = tag + "." + str(num)
+            if not new_tag in existing_tags:
+                # Create local and remote tag
+                git_tag(new_tag)
 
-	# For testing purpose, delete tags like so:
-	# git tag -d 12345
-	# git push origin :refs/tags/12345
+	        # Note: the ugly dash is special syntax that reads from STDIN
+	        p = Popen(["hub", "release", "create", "-p", "-f", "-", new_tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	        cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
+	        tag_link = cmd_stdout.decode()
+	        print tag_link
+                break
+	        # Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
+	        #     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
+	        # You only need this:
+	        # To create a release off that tag: hub release create -p -m "hi hooooo" "v0.1"
+
+	        # For testing purpose, delete tags like so:
+	        # git tag -d 12345
+	        # git push origin :refs/tags/12345
+
+def git_tag(tag):
+    # create tag
+    p = Popen(["git", "tag", "-a", tag, "-m", "Release on " + tag], stdout=PIPE)
+    print p.stdout.read()
+    # push tag remote
+    p = Popen(["git", "push", "--follow-tags"], stdout=PIPE)
+    print p.stdout.read()
+
+def git_list_tags():
+    p = Popen(["git", "tag"], stdout=PIPE)
+    result = p.stdout.read()
+    tags = {t for t in result.split("\n") if len(t.strip()) > 0}
+    return tags
 
 def load_template(name):
 	if os.path.isfile(name):
