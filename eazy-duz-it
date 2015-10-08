@@ -63,7 +63,7 @@ def cut_release():
             git_tag(new_tag)
 
             # Note: the ugly dash is special syntax that reads from STDIN
-            release_cmd = shlex.split("hub release create -p -f - new_tag")
+            release_cmd = shlex.split("hub release create -p -f - {}".format(new_tag))
             p = Popen(release_cmd, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
             cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
             tag_link = cmd_stdout.decode()
