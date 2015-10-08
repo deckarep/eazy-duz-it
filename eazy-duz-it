@@ -6,6 +6,7 @@ from subprocess import Popen, PIPE, STDOUT
 import argparse
 import os.path
 import json
+import shlex
 
 MAX_ALLOWED_RELEASE_TAGS = 70
 
@@ -40,7 +41,8 @@ def pull_request(title):
 
    # generate a PR against the merged templates
    # Note: the ugly dash is special syntax that reads from STDIN
-   p = Popen(["hub", "pull-request", "-F", "-"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+   pr_cmd = shlex.split("hub pull-request -F -")
+   p = Popen(pr_cmd, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
    cmd_stdout = p.communicate(input=merged_template)[0]
    link = cmd_stdout.decode()
 
@@ -61,7 +63,8 @@ def cut_release():
             git_tag(new_tag)
 
             # Note: the ugly dash is special syntax that reads from STDIN
-            p = Popen(["hub", "release", "create", "-p", "-f", "-", new_tag], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+            release_cmd = shlex.split("hub release create -p -f - {}".format(new_tag))
+            p = Popen(release_cmd, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
             cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
             tag_link = cmd_stdout.decode()
             print tag_link
@@ -79,7 +82,8 @@ def checkbox(s):
     return "\t- [ ] " + s
 
 def git_is_clean():
-    p = Popen(["git", "status"], stdout=PIPE)
+    clean_cmd = shlex.split("git status")
+    p = Popen(clean_cmd, stdout=PIPE)
     if "Changes not staged for commit" in p.stdout.read():
         return False
     else:
@@ -87,14 +91,17 @@ def git_is_clean():
 
 def git_tag(tag):
     # create tag
-    p = Popen(["git", "tag", "-a", tag, "-m", "Release on " + tag], stdout=PIPE)
+    tag_cmd = shlex.split("git tag -a {0} -m Release on {0}".format(tag))
+    p = Popen(tag_cmd, stdout=PIPE)
     print p.stdout.read()
     # push tag remote
-    p = Popen(["git", "push", "--follow-tags"], stdout=PIPE)
+    push_cmd = shlex.split("git push --follow-tags")
+    p = Popen(push_cmd, stdout=PIPE)
     print p.stdout.read()
 
 def git_list_tags():
-    p = Popen(["git", "tag"], stdout=PIPE)
+    tag_cmd = shlex.split("git tag")
+    p = Popen(tag_cmd, stdout=PIPE)
     result = p.stdout.read()
     tags = {t for t in result.split("\n") if len(t.strip()) > 0}
     return tags
@@ -124,14 +131,16 @@ def byteify(input):
 
 # Helper method for getting the clipboard's data
 def getClipboardData():
-    p = subprocess.Popen(['pbpaste'], stdout=subprocess.PIPE)
+    paste_cmd = shlex.split("pbpaste")
+    p = subprocess.Popen(paste_cmd, stdout=subprocess.PIPE)
     retcode = p.wait()
     data = p.stdout.read()
     return data
 
 # Helper method for setting the clipboard with data
 def setClipboardData(data):
-    p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+    copy_cmd = shlex.split("pbcopy")
+    p = subprocess.Popen(copy_cmd, stdin=subprocess.PIPE)
     p.stdin.write(data)
     p.stdin.close()
     retcode = p.wait()
