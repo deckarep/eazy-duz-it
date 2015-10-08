@@ -12,14 +12,8 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # TODO:
 # * parse version from repo, perhaps by specifiying a file and line and regex of where to get the version
 # * increment version automatically (optional)
-# * provide json config in repo where all the details live
-# * include the chef-data staging/production keys that should get updated
 # * provide command: --pull-request (currently in progress)
-# * provide command: --release (not started, but cuts a release)
-#   * Need to:
-#       * create local tag based on datetime format
-#       * push tag to remote
-#       * use the created tag as the hash against the release tag
+# * provide command: --release (currently in progress)
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
