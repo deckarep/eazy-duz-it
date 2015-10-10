@@ -76,29 +76,32 @@ def checkbox(s):
     return "\t- [ ] " + s
 
 def git_is_clean():
-    clean_cmd = shlex.split("git status")
-    p = Popen(clean_cmd, stdout=PIPE)
-    if "Changes not staged for commit" in p.stdout.read():
+    result = run_command("git status")
+    if "Changes not staged for commit" in result:
         return False
     else:
         return True
 
 def git_tag(tag):
     # create tag
-    tag_cmd = shlex.split("git tag -a {0} -m Release on {0}".format(tag))
-    p = Popen(tag_cmd, stdout=PIPE)
-    print p.stdout.read()
+    result = run_command("git tag -a {0} -m Release on {0}".format(tag))
+    print result
+
     # push tag remote
-    push_cmd = shlex.split("git push --follow-tags")
-    p = Popen(push_cmd, stdout=PIPE)
-    print p.stdout.read()
+    result = run_command("git push --follow-tags")
+    print result 
 
 def git_list_tags():
-    tag_cmd = shlex.split("git tag")
-    p = Popen(tag_cmd, stdout=PIPE)
-    result = p.stdout.read()
+    result = run_command("git tag")
     tags = {t for t in result.split("\n") if len(t.strip()) > 0}
     return tags
+
+# handles the running of shell commands
+def run_command(cmd):
+    c = shlex.split(cmd)
+    p = Popen(c, stdout=PIPE)
+    result = p.stdout.read()
+    return result
 
 def load_template(name):
     if os.path.isfile(name):
