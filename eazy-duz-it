@@ -17,9 +17,9 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --release (currently in progress)
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
-# * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
+# * provide command: --prod (fails if staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
-#   # merge master template with contributing template
+   # merge master template with repo template
    master_template = load_template("GLOBAL.md").replace("{{SUMMARY}}", title + "\n")
    repo_template = gen_repo_template()
    merged_template = title + "\n\n" + master_template + repo_template
@@ -63,7 +63,7 @@ def cut_release():
             p = Popen(release_cmd, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
             cmd_stdout = p.communicate(input="Here is some fun stuff\nabc\nefg\nhij")[0]
             tag_link = cmd_stdout.decode()
-            print tag_link
+            print tag_link.strip()
             break
             # Note: I don't think the step below is necessary, hub is smart enough to create a tag of any name you specifiy
             #     To create a git tag: git tag -a v0.1 -m "Only supports Pull-requests"
@@ -100,10 +100,8 @@ def git_list_tags():
 
 # handles the running of shell commands
 def run_command(cmd):
-    c = shlex.split(cmd)
-    p = Popen(c, stdout=PIPE)
-    result = p.stdout.read()
-    return result
+    # TODO: handle CalledProcessError exception for robustness
+    return subprocess.check_output(shlex.split(cmd))
 
 def load_template(name):
     if os.path.isfile(name):
