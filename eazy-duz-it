@@ -21,6 +21,7 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * FEATURE: prompt user to use built-n editor the same way git does (not sure how to do that yet.)
 # * -- You can accomplish this by like: ls | vi - (where dash tells vim to load from STDIN)
 # * -- Also: a utility called Vipe can be used in the moreutils distro (brew install moreutils)
+# * -- Another way: http://stackoverflow.com/a/6309753/71079
 
 # Generates a PR template on Github that's pre-filled out
 def pull_request(title):
