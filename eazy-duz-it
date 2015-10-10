@@ -42,7 +42,7 @@ def pull_request(title):
 
    # assign resultant link to clipboard
    #setClipboardData(link)
-   print link
+   print link.strip()
 
 def cut_release():
     # Generate tag format
