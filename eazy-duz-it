@@ -20,18 +20,9 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
 #   # merge master template with contributing template
-   global_template = load_template("GLOBAL.md").replace("{{SUMMARY}}", title + "\n")
-   cont_json = load_json("eazy-duz-it.json")
-   # generate exclusive repo contents
-   tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
-   # including checklist specific to this repo
-   checklist = []
-   if cont_json.get("requires_owner_review", False):
-       checklist.append(checkbox("Team Reviewed: " + cont_json.get("owner", "")))
-   checklist = checklist + [checkbox(c) for c in cont_json["contributing"]]
-
-   checklist_template = "\n".join(checklist)
-   merged_template = title + "\n\n" + global_template + tier + checklist_template
+   master_template = load_template("GLOBAL.md").replace("{{SUMMARY}}", title + "\n")
+   repo_template = gen_repo_template()
+   merged_template = title + "\n\n" + master_template + repo_template
 
    # generate a PR against the merged templates
    # Note: the ugly dash is special syntax that reads from STDIN
@@ -43,6 +34,17 @@ def pull_request(title):
    # assign resultant link to clipboard
    #setClipboardData(link)
    print link.strip()
+
+# appends the repo specific PR template 
+def gen_repo_template():
+   cont_json = load_json("eazy-duz-it.json")
+   tier = "- [ ] %s - Merge Checklist:\n" % cont_json["name"]
+   checklist = []
+   if cont_json.get("requires_owner_review", False):
+       checklist.append(checkbox("Team Reviewed: " + cont_json.get("owner", "")))
+   checklist = checklist + [checkbox(c) for c in cont_json["contributing"]]
+   checklist_template = "\n".join(checklist)
+   return tier + checklist_template
 
 def cut_release():
     # Generate tag format
