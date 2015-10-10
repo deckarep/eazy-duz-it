@@ -17,9 +17,9 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --release (currently in progress)
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
-# * provide command: --prod (fails if a staging was not yet updated and pre-release doesn't exist)
+# * provide command: --prod (fails if staging was not yet updated and pre-release doesn't exist)
 def pull_request(title):
-#   # merge master template with contributing template
+   # merge master template with repo template
    master_template = load_template("GLOBAL.md").replace("{{SUMMARY}}", title + "\n")
    repo_template = gen_repo_template()
    merged_template = title + "\n\n" + master_template + repo_template
