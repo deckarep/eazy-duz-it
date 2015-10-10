@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
     # pull-request arguments
     parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
-    parser.add_argument("-t", "--title", dest="title", help="title for your pull-request")
+    parser.add_argument("-m", "--message", dest="message", help="message for your pull-request")
 
     # pre-release tag arguments
     parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
@@ -161,8 +161,9 @@ if __name__ == "__main__":
 
     # Creates a pull-request
     if args.pr:
-        if not args.title:
+        if not args.message:
             print "You need a title."
-        pull_request(args.title)
+            sys.exit(1)    
+        pull_request(args.message)
     elif args.rt:
         cut_release() # does nothing yet
