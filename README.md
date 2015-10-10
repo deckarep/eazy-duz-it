@@ -11,6 +11,11 @@ This tool requires the following sub-tools:
     brew install hub
 ```
 
+* moreutils (http://joeyh.name/code/moreutils/)
+```sh
+	brew install moreutils
+```
+
 * pbcopy/pbpaste
 * a Github account
 
