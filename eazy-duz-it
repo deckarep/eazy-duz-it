@@ -10,7 +10,12 @@ import shlex
 import version
 from distutils.version import StrictVersion
 
+def enum(**enums):
+    return type('Enum', (), enums)
+
 VERSION = StrictVersion(version.__version__)
+Bump = enum(MAJOR=0, MINOR=1, PATCH=2)
+
 MAX_ALLOWED_RELEASE_TAGS = 70
 
 # TODO:
@@ -167,6 +172,19 @@ def editor_intercept(data):
     print "Couldn't create temp file for vim editing...aborting."
     sys.exit(1)
 
+def version_bump(version, bump=None):
+    v = StrictVersion(version)
+    major, minor, patch = (int(pt) for pt in str(v).split('.'))
+
+    if bump == Bump.MAJOR:
+        major+=1
+    elif bump == Bump.MINOR:
+        minor+=1
+    else:
+        patch+=1
+
+    return str(StrictVersion("%d.%d.%d" % (major, minor, patch)))
+
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
     if not git_is_clean():
@@ -181,7 +199,6 @@ if __name__ == "__main__":
 
     # pre-release tag arguments
     parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
-
 
     # parse all args
     args = parser.parse_args()
