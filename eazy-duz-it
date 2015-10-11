@@ -7,7 +7,6 @@ import argparse
 import os.path
 import json
 import shlex
-import time
 
 MAX_ALLOWED_RELEASE_TAGS = 70
 
