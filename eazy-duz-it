@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys
+import sys, tempfile, os
 from datetime import date
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
@@ -7,6 +7,7 @@ import argparse
 import os.path
 import json
 import shlex
+import time
 
 MAX_ALLOWED_RELEASE_TAGS = 70
 
@@ -147,6 +148,20 @@ def setClipboardData(data):
     p.stdin.close()
     retcode = p.wait()
 
+def editor_intercept(data):
+    EDITOR = os.environ.get('EDITOR','vim') #that easy!
+    with tempfile.NamedTemporaryFile(mode="w+t", suffix=".tmp") as tf:
+        tf.write(data)
+        tf.flush()
+        subprocess.call([EDITOR, tf.name])
+        # Now open the file (NOTE: seek(0) and reading the same `tf` file didn't work)
+        with open(tf.name, 'r') as of:
+            txt = of.read()
+            return txt
+
+    print "Couldn't create temp file for vim editing...aborting."
+    sys.exit(1)
+
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
     if not git_is_clean():
@@ -162,6 +177,9 @@ if __name__ == "__main__":
     # pre-release tag arguments
     parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
 
+    # test vim editor
+    parser.add_argument("-v", "--vim", dest="vim", help="prompts for the editor", action="store_true") 
+
     args = parser.parse_args()
 
     # Creates a pull-request
@@ -172,3 +190,5 @@ if __name__ == "__main__":
         pull_request(args.message)
     elif args.rt:
         cut_release() # does nothing yet
+    elif args.vim:
+        editor_intercept("How are you doing?\nI am fine.")
