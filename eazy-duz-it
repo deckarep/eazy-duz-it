@@ -183,7 +183,7 @@ def version_bump(version, bump=None):
     else:
         patch+=1
 
-    return str(StrictVersion("%d.%d.%d" % (major, minor, patch)))
+    return "%d.%d.%d" % (major, minor, patch)
 
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
