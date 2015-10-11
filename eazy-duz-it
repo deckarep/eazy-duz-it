@@ -106,7 +106,6 @@ def git_list_tags():
 
 # handles the running of shell commands
 def run_command(cmd):
-    # TODO: handle CalledProcessError exception for robustness
     return subprocess.check_output(shlex.split(cmd))
 
 def load_template(name):
