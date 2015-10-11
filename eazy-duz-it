@@ -18,7 +18,7 @@ MAX_ALLOWED_RELEASE_TAGS = 70
 # * provide command: --rollback (reverses process for speedy rollback)
 # * provide command: --staging (automatically prompts to create a release if one doesn't exist)
 # * provide command: --prod (fails if staging was not yet updated and pre-release doesn't exist)
-# * FEATURE: prompt user to use built-n editor the same way git does (not sure how to do that yet.)
+# * DONE: FEATURE: prompt user to use built-n editor the same way git does (not sure how to do that yet.)
 # * -- You can accomplish this by like: ls | vi - (where dash tells vim to load from STDIN)
 # * -- Also: a utility called Vipe can be used in the moreutils distro (brew install moreutils)
 # * -- Another way: http://stackoverflow.com/a/6309753/71079
