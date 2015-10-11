@@ -182,9 +182,8 @@ if __name__ == "__main__":
     # pre-release tag arguments
     parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
 
-    # test vim editor
-    parser.add_argument("-v", "--vim", dest="vim", help="prompts for the editor", action="store_true") 
 
+    # parse all args
     args = parser.parse_args()
 
     # Creates a pull-request
@@ -195,5 +194,3 @@ if __name__ == "__main__":
         pull_request(args.message)
     elif args.rt:
         cut_release() # does nothing yet
-    elif args.vim:
-        editor_intercept("How are you doing?\nI am fine.")
