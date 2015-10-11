@@ -10,6 +10,7 @@ import shlex
 import version
 from distutils.version import StrictVersion
 
+VERSION = StrictVersion(version.__version__)
 MAX_ALLOWED_RELEASE_TAGS = 70
 
 # TODO:
@@ -172,8 +173,7 @@ if __name__ == "__main__":
         print "Aborting: branch not clean."
         #sys.exit(1) 
 
-    ver = StrictVersion(version.__version__)
-    parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(ver))
+    parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(VERSION))
 
     # pull-request arguments
     parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
