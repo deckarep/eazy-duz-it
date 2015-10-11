@@ -30,6 +30,9 @@ def pull_request(title):
    repo_template = gen_repo_template()
    merged_template = title + "\n\n" + master_template + repo_template
 
+   # editor intercept for user
+   merged_template = editor_intercept(merged_template)
+
    # generate a PR against the merged templates
    # Note: the ugly dash is special syntax that reads from STDIN
    pr_cmd = shlex.split("hub pull-request -F -")
