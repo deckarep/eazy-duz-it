@@ -193,18 +193,7 @@ def hub_installed():
     except:
         return False
 
-
-if __name__ == "__main__":
-    # Don't do ANYTHING if git is not clean.
-    if not git_is_clean():
-        print "Aborting: branch not clean."
-        #sys.exit(1) 
-
-    # Ensure we have hub installed before continuing
-    if not hub_installed():
-        print "Aborting: this script requires hub.  (brew install hub)"
-        sys.exit(1)
-
+def parse_args():
     parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(VERSION))
 
     # pull-request arguments
@@ -214,8 +203,19 @@ if __name__ == "__main__":
     # pre-release tag arguments
     parser.add_argument("-rt", "--release-tag", dest="rt", help="generates a release tag", action="store_true")
 
-    # parse all args
-    args = parser.parse_args()
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    if not git_is_clean():
+        print "Aborting: branch not clean."
+        #sys.exit(1) 
+
+    if not hub_installed():
+        print "Aborting: this script requires hub.  (brew install hub)"
+        sys.exit(1)
+
+    # Parse all the args!
+    args = parse_args()
 
     # Creates a pull-request
     if args.pr:
