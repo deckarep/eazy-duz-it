@@ -181,11 +181,28 @@ def version_bump(version, bump=Bump.PATCH):
     m[bump]+=1
     return ".".join([str(x) for x in m.values()])
 
+# Check that hub is installed
+def hub_installed():
+    try:
+        result = run_command("which hub")
+        if "/usr/local/bin/" in result:
+            return True
+        else:
+            return False
+    except:
+        return False
+
+
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
     if not git_is_clean():
         print "Aborting: branch not clean."
         #sys.exit(1) 
+
+    # Ensure we have hub installed before continuing
+    if not hub_installed():
+        print "Aborting: this script requires hub.  (brew install hub)"
+        sys.exit(1)
 
     parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(VERSION))
 
