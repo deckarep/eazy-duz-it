@@ -11,6 +11,7 @@ import version
 from distutils.version import StrictVersion
 from collections import OrderedDict
 
+# ghetto enums in Python 2.7
 def enum(**enums):
     return type('Enum', (), enums)
 
