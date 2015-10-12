@@ -185,16 +185,21 @@ def version_bump(version, bump=Bump.PATCH):
 # Check that hub is installed
 def hub_installed():
     try:
-        result = run_command("which hub")
-        if "/usr/local/bin/" in result:
-            return True
+        result = run_command("hub --version")
+        if "version" in result:
+            return result 
         else:
-            return False
+            return None
     except:
-        return False
+        return None
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(VERSION))
+    hub_version = hub_installed()
+    if not hub_version:
+        print "Aborting: this script requires hub.  (brew install hub)"
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(prog="eazy-duz-it", description="version: " + str(VERSION) + " " + hub_version)
 
     # pull-request arguments
     parser.add_argument("-pr", "--pull-request", dest="pr", help="generates a pull-request", action="store_true")
@@ -209,10 +214,6 @@ if __name__ == "__main__":
     if not git_is_clean():
         print "Aborting: branch not clean."
         #sys.exit(1) 
-
-    if not hub_installed():
-        print "Aborting: this script requires hub.  (brew install hub)"
-        sys.exit(1)
 
     # Parse all the args!
     args = parse_args()
