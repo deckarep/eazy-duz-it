@@ -9,6 +9,7 @@ import json
 import shlex
 import version
 from distutils.version import StrictVersion
+from collections import OrderedDict
 
 def enum(**enums):
     return type('Enum', (), enums)
@@ -175,17 +176,16 @@ def editor_intercept(data):
 
 # Expects version in format: maj.min.patch, and you can specify which to bump, otherwise patch is default.
 def version_bump(version, bump=Bump.PATCH):
+    # Try writing this in Perl...shyeah right...
+    m = OrderedDict(([(k, int(v)) for k, v in enumerate(str(StrictVersion(version)).split("."))]))
+    m[bump]+=1
+    return ".".join([str(x) for x in m.values()])
+
+def version_bump_2(version, bump=Bump.PATCH):
     v = StrictVersion(version)
-    major, minor, patch = (int(pt) for pt in str(v).split('.'))
-
-    if bump == Bump.MAJOR:
-        major+=1
-    elif bump == Bump.MINOR:
-        minor+=1
-    else:
-        patch+=1
-
-    return "%d.%d.%d" % (major, minor, patch)
+    m = dict(zip(((k, int(v)) for k, v in enumerate(str(v).split('.')))))
+    m[bump]+=1
+    return ".".join(m.values())
 
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
