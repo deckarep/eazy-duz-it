@@ -181,12 +181,6 @@ def version_bump(version, bump=Bump.PATCH):
     m[bump]+=1
     return ".".join([str(x) for x in m.values()])
 
-def version_bump_2(version, bump=Bump.PATCH):
-    v = StrictVersion(version)
-    m = dict(zip(((k, int(v)) for k, v in enumerate(str(v).split('.')))))
-    m[bump]+=1
-    return ".".join(m.values())
-
 if __name__ == "__main__":
     # Don't do ANYTHING if git is not clean.
     if not git_is_clean():
